@@ -41,7 +41,7 @@ ZhipuAI (智谱清言) 接口转API [glm-free-api](https://github.com/LLM-Red-Te
   * [对话补全](#对话补全)
   * [文档解读](#文档解读)
   * [图像解析](#图像解析)
-  * [refresh_token存活检测](#refresh_token存活检测)
+  * [ssoSessionId存活检测](#ssoSessionId存活检测)
 * [注意事项](#注意事项)
   * [Nginx反代优化](#Nginx反代优化)
 
@@ -97,7 +97,7 @@ https://udify.app/chat/xsLvQf9U0QJRIkmN
 
 ### 多账号接入
 
-你可以通过提供多个账号的refresh_token并使用`,`拼接提供：
+你可以通过提供多个账号的ssoSessionId并使用`,`拼接提供：
 
 `Authorization: Bearer TOKEN1,TOKEN2,TOKEN3`
 
@@ -235,7 +235,7 @@ pm2 stop spark-free-api
 header 需要设置 Authorization 头部：
 
 ```
-Authorization: Bearer [refresh_token]
+Authorization: Bearer [ssoSessionId]
 ```
 
 请求数据：
@@ -288,7 +288,7 @@ Authorization: Bearer [refresh_token]
 header 需要设置 Authorization 头部：
 
 ```
-Authorization: Bearer [refresh_token]
+Authorization: Bearer [ssoSessionId]
 ```
 
 请求数据：
@@ -352,7 +352,7 @@ Authorization: Bearer [refresh_token]
 header 需要设置 Authorization 头部：
 
 ```
-Authorization: Bearer [refresh_token]
+Authorization: Bearer [ssoSessionId]
 ```
 
 请求数据：
