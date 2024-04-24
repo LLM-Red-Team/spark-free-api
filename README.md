@@ -1,6 +1,6 @@
 # Spark AI Free 服务
 
-![](https://img.shields.io/github/license/llm-red-team/spark-free-api.svg)
+[![](https://img.shields.io/github/license/llm-red-team/kimi-free-api.svg)](LICENSE)
 ![](https://img.shields.io/github/stars/llm-red-team/spark-free-api.svg)
 ![](https://img.shields.io/github/forks/llm-red-team/spark-free-api.svg)
 ![](https://img.shields.io/docker/pulls/vinlic/spark-free-api.svg)
@@ -12,8 +12,6 @@
 还有以下六个free-api欢迎关注：
 
 Moonshot AI（Kimi.ai）接口转API [kimi-free-api](https://github.com/LLM-Red-Team/kimi-free-api)
-
-阶跃星辰 (跃问StepChat) 接口转API [step-free-api](https://github.com/LLM-Red-Team/step-free-api)
 
 阶跃星辰 (跃问StepChat) 接口转API [step-free-api](https://github.com/LLM-Red-Team/step-free-api)
 
@@ -44,7 +42,8 @@ ZhipuAI (智谱清言) 接口转API [glm-free-api](https://github.com/LLM-Red-Te
   * [ssoSessionId存活检测](#ssoSessionId存活检测)
 * [注意事项](#注意事项)
   * [Nginx反代优化](#Nginx反代优化)
-
+  * [Token统计](#Token统计)
+* [Star History](#star-history)
 ## 免责声明
 
 **逆向API是不稳定的，建议前往讯飞星火官方 https://xinghuo.xfyun.cn/sparkapi 付费使用API，避免封禁的风险。**
