@@ -680,7 +680,24 @@ function tokenSplit(authorization: string) {
  * 获取Token存活状态
  */
 async function getTokenLiveStatus(ssoSessionId: string) {
-  return false;
+  const result = await axios.get('https://xinghuo.xfyun.cn/iflygpt/userInfo', {
+    headers: {
+      Clienttype: "1",
+      "Lang-Code": "zh",
+      ...FAKE_HEADERS,
+      Cookie: generateCookie(ssoSessionId),
+      "X-Requested-With": "XMLHttpRequest",
+    },
+    timeout: 15000,
+    validateStatus: () => true,
+  });
+  try {
+    const { userInfo } = checkResult(result);
+    return !!userInfo;
+  }
+  catch (err) {
+    return false;
+  }
 }
 
 export default {
