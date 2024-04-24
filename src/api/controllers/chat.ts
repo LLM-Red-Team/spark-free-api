@@ -552,14 +552,12 @@ async function receiveStream(model: string, convId: string, stream: any) {
       usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 },
       created: util.unixTimestamp(),
     };
-    let end = false;
     const parser = createParser((event) => {
       try {
-        if (event.type !== "event" || end) return;
-        if (event.data == "<end>") {
+        if (event.type !== "event" || /<sid>$/.test(event.data)) return;
+        if (event.data == "<end>")
           resolve(data);
-          end = true;
-        } else {
+        else {
           // 解析文本
           const text = Buffer.from(event.data, "base64").toString();
           data.choices[0].message.content += text;
@@ -615,8 +613,7 @@ function createTransStream(
     );
   const parser = createParser((event) => {
     try {
-      if (event.type !== "event") return;
-      if (event.type !== "event" || end) return;
+      if (event.type !== "event" || /<sid>$/.test(event.data)) return;
       if (event.data == "<end>") {
         const data = `data: ${JSON.stringify({
           id: convId,
@@ -635,7 +632,6 @@ function createTransStream(
         !transStream.closed && transStream.write(data);
         !transStream.closed && transStream.end("data: [DONE]\n\n");
         endCallback && endCallback();
-        end = true;
       } else {
         // 解析文本
         const text = Buffer.from(event.data, "base64").toString();
