@@ -95,6 +95,8 @@ https://udify.app/chat/xsLvQf9U0QJRIkmN
 
 这个值将作为Authorization的Bearer Token值：`Authorization: Bearer TOKEN`
 
+**注意：如果退出登录或重新登录将可能导致ssoSessionId失效！**
+
 ### 多账号接入
 
 你可以通过提供多个账号的ssoSessionId并使用`,`拼接提供：
