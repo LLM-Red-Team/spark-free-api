@@ -9,7 +9,10 @@
 
 与ChatGPT接口完全兼容。
 
-请从Cookie获取 `ssoSessionId` 作为API KEY，与其它free-api调用方式一致。 
+请从Cookie获取 `ssoSessionId` 作为API KEY，由于星火平台禁用F12开发者工具，请安装 `Cookie-Editor` 浏览器插件查看你的Cookie，调用方法与其它free-api一致。 
+
+![image](https://github.com/LLM-Red-Team/spark-free-api/assets/20235341/a075cde2-db70-415d-93a4-1114029c9ef8)
+
 
 ## 免责声明
 
