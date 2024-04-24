@@ -9,6 +9,6 @@
 
 与ChatGPT接口完全兼容。
 
-请从Cookie获取 `ossSessionId` 作为API KEY，与其它free-api调用方式一致。 
+请从Cookie获取 `ssoSessionId` 作为API KEY，与其它free-api调用方式一致。 
 
 README正在完善中...，敬请期待
