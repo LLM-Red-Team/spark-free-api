@@ -4,6 +4,7 @@ import Response from '@/lib/response/Response.ts';
 import chat from "./chat.ts";
 import token from "./token.ts";
 import ping from "./ping.ts";
+import models from './models.ts';
 
 export default [
     {
@@ -21,5 +22,6 @@ export default [
     },
     chat,
     token,
-    ping
+    ping,
+    models
 ];
