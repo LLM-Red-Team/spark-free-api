@@ -375,7 +375,7 @@ function messagesPrepare(messages: any[]) {
       }, content);
     }
     return (content += `${message.role || "user"}:${message.content}\n`);
-  }, "");
+  }, "") + "assistant:";
   logger.info("\n对话合并：\n" + content);
   return content;
 }
