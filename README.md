@@ -303,7 +303,7 @@ Authorization: Bearer [ssoSessionId]
 header 需要设置 Authorization 头部：
 
 ```
-Authorization: Bearer [refresh_token]
+Authorization: Bearer [ssoSessionId]
 ```
 
 请求数据：
