@@ -39,6 +39,7 @@ ZhipuAI (智谱清言) 接口转API [glm-free-api](https://github.com/LLM-Red-Te
 * [原生部署](#原生部署)
 * [接口列表](#接口列表)
   * [对话补全](#对话补全)
+  * [AI绘图](#AI绘图)
   * [文档解读](#文档解读)
   * [图像解析](#图像解析)
   * [ssoSessionId存活检测](#ssoSessionId存活检测)
@@ -76,6 +77,10 @@ https://udify.app/chat/xsLvQf9U0QJRIkmN
 ### 联网搜索Demo
 
 ![联网搜索](./doc/example-2.png)
+
+### AI绘图Demo
+
+![AI绘图](./doc/example-5.png)
 
 ### 长文档解读Demo
 
@@ -276,6 +281,37 @@ Authorization: Bearer [ssoSessionId]
         "total_tokens": 2
     },
     "created": 1713933188
+}
+```
+
+### AI绘图
+
+对话补全接口，与openai的 [images-create-api](https://platform.openai.com/docs/api-reference/images/create) 兼容。
+
+**POST /v1/images/generations**
+
+header 需要设置 Authorization 头部：
+
+```
+Authorization: Bearer [refresh_token]
+```
+
+请求数据：
+```json
+{
+    "prompt": "画只猫"
+}
+```
+
+响应数据：
+```json
+{
+    "created": 1711507449,
+    "data": [
+        {
+            "url": "https://sgw-dx.xf-yun.com/api/v1/sparkdesk/multimodal_image_301306010U064624.jpg?authorization=c2ltcGxlLWp3dCBhaz1zcGFya2Rlc2s4MDAwMDAwMDAwMDE7ZXhwPTMyOTA5MjMwNjM7YWxnbz1obWFjLXNoYTI1NjtzaWc9WnBIdk52ZzJLMmpDbkYzOUU1N3RLVVVSdnkvamxydVgvUnE1SWxnRUdaST0=&x_location=7YfQJjZB7uKO7jlRxIftd6Fbdo=="
+        }
+    ]
 }
 ```
 
