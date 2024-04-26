@@ -144,7 +144,9 @@ async function createCompletion(
     const refFileUrls = extractRefFileUrls(messages);
     const refs = refFileUrls.length
       ? await Promise.all(
-          refFileUrls.map((fileUrl) => uploadFile(convId, fileUrl, ssoSessionId))
+          refFileUrls.map((fileUrl) =>
+            uploadFile(convId, fileUrl, ssoSessionId)
+          )
         )
       : [];
 
@@ -162,10 +164,14 @@ async function createCompletion(
       "GtToken",
       "RzAwAGPhPKm+/9ZXJiBczVs0AJi32oPNZVXQxtWEjWBIP9R/jABbXLN0ESmMLCIj91w3ZeXT4J1ZA4CGcf14DgMDKWSDHLHnQIkotlkRhVEYSb/o58dKgu3LjYLC3Dy+76/agYQkhpiOdVc7s68bfGYLvibLdyrIJyX42a0GErTall8JYmiq6IO5K1w4je2QeYheEpKKqyttEjWnOBUAKrXx2kLYetnIebNyFOKr8o1A7jvKdNA6YfdpoJg0tHA3SQc72eiL0lO4/3kP1FWhonscdvH/88j5KRX76bO0u3+Fqt7FyFkHfLIcrZGN5HAc5GUuZrCUkf/OpePeNtPQ9gOC5pI8BlFnZQX9s2xFUv+R8Ijj6N5FNHBBhSJL/B5MYtMxMAmxOvs1rv/EACslRc2NJQb1Vu1BSFye//ATQZYTA6+Ox+BqTFcAy/yDEYRZE53ML1DZ4gG9QwmejVWLbW5N+dWPnbscua2/ZM20oIABd5NK6tp+6aQ71oen2mq/ADf17ekoH7zn/fe0U6pBGOVnl/+hDotMPbXbhzd6QBj3RIIaDBRFJdBI7AWkfe6DZvss+bURUcxy+B4wbkBc9E7791LYFKAHjh0poIT9L+Yz+rDihSIJLTBe0zcjOLRefFXyxB4zwfmIJhCNcrHWzL3+BhsZuGrd3LovOOGMObOOloAD2FYeizATyourGcz8U10POOF/ZnaAJOH7vMijGD9UhcPtPUgDzSWX6TZc+QUCM4XcGfbPcNIx9Y47OLEtsgsrrBNPPUXZLVV4ywR5mM0YU5i8Xzcba8QPuEnwI8GY09MIKCqwS+SYphKHdWn06Xm4mAT5wQtUXB1FVB6vmdnimhSdp8YF3y85xu1I7pTbAHU6y8MvX5WUS9KBMu5YSu02S4RGaXZgbsGSVMqtMyVunpNZ/uozjFbQZLF09R2hX94iFCiEfJ9F4EuEZWXFpiRrlNPjkVNWk7fyy4b8cTIN1myIeKbCRVGBj8pgoUbxkOjxZuVVpAXvKHyo0UuuXIpggLKx+rUZTg9GcJO7bowuRHvxF6wqayZsrT4NkLHiKgH9PP8wWCG/IBjCksmpB8AXmMMq6c5yyrXrXSg865OgLjM40+GyjzLsyLtOSLagbmCv9PsWEm5nlrUq+5J+kFEHRvvhybuuJ9cdsz9c/J2A+9i6xOePi2cEGKCmQrnbuGuS2UINZvc0L2F2RiPN3quzJ0yvUpSEt+Do37lj+sKY5vowdtP0BWka0NtHEYF8fpwNBj4DzELhZFZg/cnFgaf1EySk4/bCQtaZumrra3skfYrlWPP9IPRbDUNS5piqEg0IbKSGVIVMuShJzsiWvgEuWHIVzZEurIXR8UJ3h/XB4ciaFdDCjdo///Y7yRH00luqDLF9rnB9BRFfSOCxnH6fC0ZpW5qLpq3fFA3OuFgsGUENUaOBSYc1V5sZmGrpqHv+cSNvfyPXRuR3gHHbY4k0wFWWWXsCKdT+GQM9lD2eXzRrw5mRckGr+578Xa3Evf8tHAVSRo1HJTI2BmZQYhHxRia+LO/xCFdnLr7nwFqJ5cUWbqlCGmKNykPVZcuCJMr3qaVK2ED/GLB/6JB+0xXmtLJjm3qltNuu0Hv7cIdctXBQMcUP/NgxL2e1FPO6TbJjlwFBMcTjWmS9IjAb/irqZd/xEO/0Ak6rZo8twB6vIIhh8IVnPkOH037nbb27yc8XfT0CwZKX20nkKNtCpngghbAic7a8i9t3EulTvoJ1F37LnQ2F7OZ4JjSOKMgh6pw8GPp+mN0RZ/pfQIYc/HDhhLKN5cSdUaRjFdtxHuTd7B9nx/DA/fScgTOo7BA8lkxYp66bnvdoEfEzt8SM6Wm92JRYnARSVJpndJJCdFoRHVWFqHYzqlQaHYysiMo/vz6/fg=="
     );
-    if (refs.filter(v => v).length > 0) formData.append("fileUrl", refs.join(","));
+    if (refs.filter((v) => v).length > 0)
+      formData.append("fileUrl", refs.join(","));
     const result = await axios.request({
       method: "POST",
-      url: refs.indexOf(null) == -1 ? "https://xinghuo.xfyun.cn/iflygpt-chat/u/chat_message/chat" : "https://xinghuo.xfyun.cn/iflygpt-longcontext/u/chat_message/web/chat",
+      url:
+        refs.indexOf(null) == -1
+          ? "https://xinghuo.xfyun.cn/iflygpt-chat/u/chat_message/chat"
+          : "https://xinghuo.xfyun.cn/iflygpt-longcontext/u/chat_message/web/chat",
       data: formData,
       headers: {
         ...FAKE_HEADERS,
@@ -229,7 +235,9 @@ async function createCompletionStream(
     const refFileUrls = extractRefFileUrls(messages);
     const refs = refFileUrls.length
       ? await Promise.all(
-          refFileUrls.map((fileUrl) => uploadFile(convId, fileUrl, ssoSessionId))
+          refFileUrls.map((fileUrl) =>
+            uploadFile(convId, fileUrl, ssoSessionId)
+          )
         )
       : [];
 
@@ -247,10 +255,14 @@ async function createCompletionStream(
       "GtToken",
       "RzAwAGPhPKm+/9ZXJiBczVs0AJi32oPNZVXQxtWEjWBIP9R/jABbXLN0ESmMLCIj91w3ZeXT4J1ZA4CGcf14DgMDKWSDHLHnQIkotlkRhVEYSb/o58dKgu3LjYLC3Dy+76/agYQkhpiOdVc7s68bfGYLvibLdyrIJyX42a0GErTall8JYmiq6IO5K1w4je2QeYheEpKKqyttEjWnOBUAKrXx2kLYetnIebNyFOKr8o1A7jvKdNA6YfdpoJg0tHA3SQc72eiL0lO4/3kP1FWhonscdvH/88j5KRX76bO0u3+Fqt7FyFkHfLIcrZGN5HAc5GUuZrCUkf/OpePeNtPQ9gOC5pI8BlFnZQX9s2xFUv+R8Ijj6N5FNHBBhSJL/B5MYtMxMAmxOvs1rv/EACslRc2NJQb1Vu1BSFye//ATQZYTA6+Ox+BqTFcAy/yDEYRZE53ML1DZ4gG9QwmejVWLbW5N+dWPnbscua2/ZM20oIABd5NK6tp+6aQ71oen2mq/ADf17ekoH7zn/fe0U6pBGOVnl/+hDotMPbXbhzd6QBj3RIIaDBRFJdBI7AWkfe6DZvss+bURUcxy+B4wbkBc9E7791LYFKAHjh0poIT9L+Yz+rDihSIJLTBe0zcjOLRefFXyxB4zwfmIJhCNcrHWzL3+BhsZuGrd3LovOOGMObOOloAD2FYeizATyourGcz8U10POOF/ZnaAJOH7vMijGD9UhcPtPUgDzSWX6TZc+QUCM4XcGfbPcNIx9Y47OLEtsgsrrBNPPUXZLVV4ywR5mM0YU5i8Xzcba8QPuEnwI8GY09MIKCqwS+SYphKHdWn06Xm4mAT5wQtUXB1FVB6vmdnimhSdp8YF3y85xu1I7pTbAHU6y8MvX5WUS9KBMu5YSu02S4RGaXZgbsGSVMqtMyVunpNZ/uozjFbQZLF09R2hX94iFCiEfJ9F4EuEZWXFpiRrlNPjkVNWk7fyy4b8cTIN1myIeKbCRVGBj8pgoUbxkOjxZuVVpAXvKHyo0UuuXIpggLKx+rUZTg9GcJO7bowuRHvxF6wqayZsrT4NkLHiKgH9PP8wWCG/IBjCksmpB8AXmMMq6c5yyrXrXSg865OgLjM40+GyjzLsyLtOSLagbmCv9PsWEm5nlrUq+5J+kFEHRvvhybuuJ9cdsz9c/J2A+9i6xOePi2cEGKCmQrnbuGuS2UINZvc0L2F2RiPN3quzJ0yvUpSEt+Do37lj+sKY5vowdtP0BWka0NtHEYF8fpwNBj4DzELhZFZg/cnFgaf1EySk4/bCQtaZumrra3skfYrlWPP9IPRbDUNS5piqEg0IbKSGVIVMuShJzsiWvgEuWHIVzZEurIXR8UJ3h/XB4ciaFdDCjdo///Y7yRH00luqDLF9rnB9BRFfSOCxnH6fC0ZpW5qLpq3fFA3OuFgsGUENUaOBSYc1V5sZmGrpqHv+cSNvfyPXRuR3gHHbY4k0wFWWWXsCKdT+GQM9lD2eXzRrw5mRckGr+578Xa3Evf8tHAVSRo1HJTI2BmZQYhHxRia+LO/xCFdnLr7nwFqJ5cUWbqlCGmKNykPVZcuCJMr3qaVK2ED/GLB/6JB+0xXmtLJjm3qltNuu0Hv7cIdctXBQMcUP/NgxL2e1FPO6TbJjlwFBMcTjWmS9IjAb/irqZd/xEO/0Ak6rZo8twB6vIIhh8IVnPkOH037nbb27yc8XfT0CwZKX20nkKNtCpngghbAic7a8i9t3EulTvoJ1F37LnQ2F7OZ4JjSOKMgh6pw8GPp+mN0RZ/pfQIYc/HDhhLKN5cSdUaRjFdtxHuTd7B9nx/DA/fScgTOo7BA8lkxYp66bnvdoEfEzt8SM6Wm92JRYnARSVJpndJJCdFoRHVWFqHYzqlQaHYysiMo/vz6/fg=="
     );
-    if (refs.filter(v => v).length > 0) formData.append("fileUrl", refs.join(","));
+    if (refs.filter((v) => v).length > 0)
+      formData.append("fileUrl", refs.join(","));
     const result = await axios.request({
       method: "POST",
-      url: refs.indexOf(null) == -1 ? "https://xinghuo.xfyun.cn/iflygpt-chat/u/chat_message/chat" : "https://xinghuo.xfyun.cn/iflygpt-longcontext/u/chat_message/web/chat",
+      url:
+        refs.indexOf(null) == -1
+          ? "https://xinghuo.xfyun.cn/iflygpt-chat/u/chat_message/chat"
+          : "https://xinghuo.xfyun.cn/iflygpt-longcontext/u/chat_message/web/chat",
       data: formData,
       headers: {
         ...FAKE_HEADERS,
@@ -288,6 +300,82 @@ async function createCompletionStream(
           ssoSessionId,
           retryCount + 1
         );
+      })();
+    }
+    throw err;
+  });
+}
+
+async function generateImages(
+  model = MODEL_NAME,
+  prompt: string,
+  ssoSessionId: string,
+  retryCount = 0
+) {
+  return (async () => {
+    logger.info(prompt);
+    const messages = [
+      { role: "user", content: prompt.indexOf('画') == -1 ? `请画：${prompt}` : prompt },
+    ];
+
+    // 创建会话
+    const convId = await createConversation(ssoSessionId);
+
+    // 请求流
+    const formData = new FormData();
+    formData.append(
+      "fd",
+      util.generateRandomString({ length: 6, charset: "numeric" })
+    );
+    formData.append("isBot", "0");
+    formData.append("clientType", "1");
+    formData.append("text", messagesPrepare(messages));
+    formData.append("chatId", convId);
+    formData.append(
+      "GtToken",
+      "RzAwAGPhPKm+/9ZXJiBczVs0AJi32oPNZVXQxtWEjWBIP9R/jABbXLN0ESmMLCIj91w3ZeXT4J1ZA4CGcf14DgMDKWSDHLHnQIkotlkRhVEYSb/o58dKgu3LjYLC3Dy+76/agYQkhpiOdVc7s68bfGYLvibLdyrIJyX42a0GErTall8JYmiq6IO5K1w4je2QeYheEpKKqyttEjWnOBUAKrXx2kLYetnIebNyFOKr8o1A7jvKdNA6YfdpoJg0tHA3SQc72eiL0lO4/3kP1FWhonscdvH/88j5KRX76bO0u3+Fqt7FyFkHfLIcrZGN5HAc5GUuZrCUkf/OpePeNtPQ9gOC5pI8BlFnZQX9s2xFUv+R8Ijj6N5FNHBBhSJL/B5MYtMxMAmxOvs1rv/EACslRc2NJQb1Vu1BSFye//ATQZYTA6+Ox+BqTFcAy/yDEYRZE53ML1DZ4gG9QwmejVWLbW5N+dWPnbscua2/ZM20oIABd5NK6tp+6aQ71oen2mq/ADf17ekoH7zn/fe0U6pBGOVnl/+hDotMPbXbhzd6QBj3RIIaDBRFJdBI7AWkfe6DZvss+bURUcxy+B4wbkBc9E7791LYFKAHjh0poIT9L+Yz+rDihSIJLTBe0zcjOLRefFXyxB4zwfmIJhCNcrHWzL3+BhsZuGrd3LovOOGMObOOloAD2FYeizATyourGcz8U10POOF/ZnaAJOH7vMijGD9UhcPtPUgDzSWX6TZc+QUCM4XcGfbPcNIx9Y47OLEtsgsrrBNPPUXZLVV4ywR5mM0YU5i8Xzcba8QPuEnwI8GY09MIKCqwS+SYphKHdWn06Xm4mAT5wQtUXB1FVB6vmdnimhSdp8YF3y85xu1I7pTbAHU6y8MvX5WUS9KBMu5YSu02S4RGaXZgbsGSVMqtMyVunpNZ/uozjFbQZLF09R2hX94iFCiEfJ9F4EuEZWXFpiRrlNPjkVNWk7fyy4b8cTIN1myIeKbCRVGBj8pgoUbxkOjxZuVVpAXvKHyo0UuuXIpggLKx+rUZTg9GcJO7bowuRHvxF6wqayZsrT4NkLHiKgH9PP8wWCG/IBjCksmpB8AXmMMq6c5yyrXrXSg865OgLjM40+GyjzLsyLtOSLagbmCv9PsWEm5nlrUq+5J+kFEHRvvhybuuJ9cdsz9c/J2A+9i6xOePi2cEGKCmQrnbuGuS2UINZvc0L2F2RiPN3quzJ0yvUpSEt+Do37lj+sKY5vowdtP0BWka0NtHEYF8fpwNBj4DzELhZFZg/cnFgaf1EySk4/bCQtaZumrra3skfYrlWPP9IPRbDUNS5piqEg0IbKSGVIVMuShJzsiWvgEuWHIVzZEurIXR8UJ3h/XB4ciaFdDCjdo///Y7yRH00luqDLF9rnB9BRFfSOCxnH6fC0ZpW5qLpq3fFA3OuFgsGUENUaOBSYc1V5sZmGrpqHv+cSNvfyPXRuR3gHHbY4k0wFWWWXsCKdT+GQM9lD2eXzRrw5mRckGr+578Xa3Evf8tHAVSRo1HJTI2BmZQYhHxRia+LO/xCFdnLr7nwFqJ5cUWbqlCGmKNykPVZcuCJMr3qaVK2ED/GLB/6JB+0xXmtLJjm3qltNuu0Hv7cIdctXBQMcUP/NgxL2e1FPO6TbJjlwFBMcTjWmS9IjAb/irqZd/xEO/0Ak6rZo8twB6vIIhh8IVnPkOH037nbb27yc8XfT0CwZKX20nkKNtCpngghbAic7a8i9t3EulTvoJ1F37LnQ2F7OZ4JjSOKMgh6pw8GPp+mN0RZ/pfQIYc/HDhhLKN5cSdUaRjFdtxHuTd7B9nx/DA/fScgTOo7BA8lkxYp66bnvdoEfEzt8SM6Wm92JRYnARSVJpndJJCdFoRHVWFqHYzqlQaHYysiMo/vz6/fg=="
+    );
+    const result = await axios.request({
+      method: "POST",
+      url: "https://xinghuo.xfyun.cn/iflygpt-chat/u/chat_message/chat",
+      data: formData,
+      headers: {
+        ...FAKE_HEADERS,
+        Botweb: "0",
+        Challenge: "undefined",
+        Cookie: generateCookie(ssoSessionId),
+        Seccode: "",
+        Validate: "undefined",
+      },
+      // 120秒超时
+      timeout: 120000,
+      validateStatus: () => true,
+      responseType: "stream",
+    });
+
+    const streamStartTime = util.timestamp();
+    // 接收流为输出文本
+    const imageUrls = await receiveImages(result.data);
+    logger.success(
+      `Stream has completed transfer ${util.timestamp() - streamStartTime}ms`
+    );
+
+    // 异步移除会话，如果消息不合规，此操作可能会抛出数据库错误异常，请忽略
+    removeConversation(convId, ssoSessionId).catch((err) =>
+      console.error(err)
+    );
+
+    if (imageUrls.length == 0)
+      throw new APIException(EX.API_IMAGE_GENERATION_FAILED);
+
+    return imageUrls;
+  })().catch((err) => {
+    if (retryCount < MAX_RETRY_COUNT) {
+      logger.error(`Stream response error: ${err.message}`);
+      logger.warn(`Try again after ${RETRY_DELAY / 1000}s...`);
+      return (async () => {
+        await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
+        return generateImages(model, prompt, ssoSessionId, retryCount + 1);
       })();
     }
     throw err;
@@ -367,15 +455,16 @@ function messagesPrepare(messages: any[]) {
     }
   }
 
-  const content = messages.reduce((content, message) => {
-    if (Array.isArray(message.content)) {
-      return message.content.reduce((_content, v) => {
-        if (!_.isObject(v) || v["type"] != "text") return _content;
-        return _content + `${message.role || "user"}:${v["text"] || ""}\n`;
-      }, content);
-    }
-    return (content += `${message.role || "user"}:${message.content}\n`);
-  }, "") + "assistant:";
+  const content =
+    messages.reduce((content, message) => {
+      if (Array.isArray(message.content)) {
+        return message.content.reduce((_content, v) => {
+          if (!_.isObject(v) || v["type"] != "text") return _content;
+          return _content + `${message.role || "user"}:${v["text"] || ""}\n`;
+        }, content);
+      }
+      return (content += `${message.role || "user"}:${message.content}\n`);
+    }, "") + "assistant:";
   logger.info("\n对话合并：\n" + content);
   return content;
 }
@@ -413,7 +502,11 @@ async function checkFileUrl(fileUrl: string) {
  * @param fileUrl 文件URL
  * @param ssoSessionId 登录态ID
  */
-async function uploadFile(convId: string, fileUrl: string, ssoSessionId: string) {
+async function uploadFile(
+  convId: string,
+  fileUrl: string,
+  ssoSessionId: string
+) {
   // 预检查远程文件URL可用性
   await checkFileUrl(fileUrl);
 
@@ -434,14 +527,14 @@ async function uploadFile(convId: string, fileUrl: string, ssoSessionId: string)
       // 100M限制
       maxContentLength: FILE_MAX_SIZE,
       // 60秒超时
-      timeout: 60000
+      timeout: 60000,
     }));
   }
 
   const formData = new FormData();
   formData.append("file", Buffer.from([]), {
     filename,
-    contentType: mimeType
+    contentType: mimeType,
   });
   // 上传文件到OSS
   let result = await axios.request({
@@ -455,7 +548,7 @@ async function uploadFile(convId: string, fileUrl: string, ssoSessionId: string)
     headers: {
       ...FAKE_HEADERS,
       Cookie: generateCookie(ssoSessionId),
-      'Content-Length': formData.getLengthSync()
+      "Content-Length": formData.getLengthSync(),
     },
   });
   const { authorization, date, host, url } = checkResult(result);
@@ -477,37 +570,39 @@ async function uploadFile(convId: string, fileUrl: string, ssoSessionId: string)
   const { link } = checkResult(result);
 
   const isImage = [
-    'image/jpeg',
-    'image/jpg',
-    'image/tiff',
-    'image/png',
-    'image/bmp',
-    'image/heic',
-    'image/heif'
+    "image/jpeg",
+    "image/jpg",
+    "image/tiff",
+    "image/png",
+    "image/bmp",
+    "image/heic",
+    "image/heif",
   ].includes(mimeType);
-  if(isImage)
-    return link;
+  if (isImage) return link;
 
   // 存储文件
-  result = await axios.post("https://xinghuo.xfyun.cn/iflygpt-longcontext/chat/enhance/saveFile", {
-    businessType: 0,
-    chatId: convId,
-    fileBusinessKey: util.uuid(),
-    fileName: filename,
-    fileSize: fileData.byteLength,
-    fileUrl: link
-  }, {
-    // 60秒超时
-    timeout: 60000,
-    headers: {
-      Clienttype: "1",
-      "Lang-Code": "zh",
-      ...FAKE_HEADERS,
-      Cookie: generateCookie(ssoSessionId),
-      "X-Requested-With": "XMLHttpRequest",
+  result = await axios.post(
+    "https://xinghuo.xfyun.cn/iflygpt-longcontext/chat/enhance/saveFile",
+    {
+      businessType: 0,
+      chatId: convId,
+      fileBusinessKey: util.uuid(),
+      fileName: filename,
+      fileSize: fileData.byteLength,
+      fileUrl: link,
     },
-  });
-  console.log(checkResult(result));
+    {
+      // 60秒超时
+      timeout: 60000,
+      headers: {
+        Clienttype: "1",
+        "Lang-Code": "zh",
+        ...FAKE_HEADERS,
+        Cookie: generateCookie(ssoSessionId),
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    }
+  );
 
   return null;
 }
@@ -555,12 +650,20 @@ async function receiveStream(model: string, convId: string, stream: any) {
     const parser = createParser((event) => {
       try {
         if (event.type !== "event" || /<sid>$/.test(event.data)) return;
-        if (event.data == "<end>")
-          resolve(data);
+        if (event.data == "<end>") resolve(data);
         else {
           // 解析文本
           const text = Buffer.from(event.data, "base64").toString();
-          data.choices[0].message.content += text;
+          if (text.indexOf("multi_image_url") != -1) {
+            const urlPattern = /"(https?:\/\/\S+)"/g;
+            let match;
+            while ((match = urlPattern.exec(text)) !== null) {
+              const url = match[1];
+              data.choices[0].message.content += `![图像](${url})`;
+            }
+          }
+          else
+            data.choices[0].message.content += text;
         }
       } catch (err) {
         logger.error(err);
@@ -633,7 +736,17 @@ function createTransStream(
         endCallback && endCallback();
       } else {
         // 解析文本
-        const text = Buffer.from(event.data, "base64").toString();
+        let text = Buffer.from(event.data, "base64").toString();
+        if (text.indexOf("multi_image_url") != -1) {
+          let temp = '';
+          const urlPattern = /"(https?:\/\/\S+)"/g;
+          let match;
+          while ((match = urlPattern.exec(text)) !== null) {
+            const url = match[1];
+            temp += `![图像](${url})`;
+          }
+          text = temp;
+        }
         const data = `data: ${JSON.stringify({
           id: convId,
           model,
@@ -668,6 +781,41 @@ function createTransStream(
 }
 
 /**
+ * 从流接收图像
+ *
+ * @param stream 消息流
+ */
+async function receiveImages(stream): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    const imageUrls = [];
+    const parser = createParser((event) => {
+      try {
+        if (event.type !== "event" || /<sid>$/.test(event.data)) return;
+        if (event.data == "<end>") return;
+        // 解析文本
+        const text = Buffer.from(event.data, "base64").toString();
+        if (text.indexOf("multi_image_url") != -1) {
+          const urlPattern = /"(https?:\/\/\S+)"/g;
+          let match;
+          while ((match = urlPattern.exec(text)) !== null) {
+            const url = match[1];
+            if(imageUrls.indexOf(url) == -1)
+              imageUrls.push(url);
+          }
+        }
+      } catch (err) {
+        logger.error(err);
+        reject(err);
+      }
+    });
+    // 将流数据喂给SSE转换器
+    stream.on("data", (buffer) => parser.feed(buffer.toString()));
+    stream.once("error", (err) => reject(err));
+    stream.once("close", () => resolve(imageUrls));
+  });
+}
+
+/**
  * Token切分
  *
  * @param authorization 认证字符串
@@ -680,7 +828,7 @@ function tokenSplit(authorization: string) {
  * 获取Token存活状态
  */
 async function getTokenLiveStatus(ssoSessionId: string) {
-  const result = await axios.get('https://xinghuo.xfyun.cn/iflygpt/userInfo', {
+  const result = await axios.get("https://xinghuo.xfyun.cn/iflygpt/userInfo", {
     headers: {
       Clienttype: "1",
       "Lang-Code": "zh",
@@ -694,8 +842,7 @@ async function getTokenLiveStatus(ssoSessionId: string) {
   try {
     const { userInfo } = checkResult(result);
     return !!userInfo;
-  }
-  catch (err) {
+  } catch (err) {
     return false;
   }
 }
@@ -704,6 +851,7 @@ export default {
   createConversation,
   createCompletion,
   createCompletionStream,
+  generateImages,
   getTokenLiveStatus,
   tokenSplit,
 };
