@@ -141,7 +141,7 @@ async function createCompletion(
     logger.info(messages);
 
     // 智能体ID解析
-    const assistantId = /^\d{4}$/.test(model) ? model : null;
+    const assistantId = /^\d{3,}$/.test(model) ? model : null;
     assistantId && logger.info(`选用智能体ID: ${assistantId}`);
 
     let convId;
@@ -247,7 +247,7 @@ async function createCompletionStream(
     logger.info(messages);
 
     // 智能体ID解析
-    const assistantId = /^\d{4}$/.test(model) ? model : null;
+    const assistantId = /^\d{3,}$/.test(model) ? model : null;
     assistantId && logger.info(`选用智能体ID: ${assistantId}`);
 
     let convId;
@@ -351,7 +351,7 @@ async function generateImages(
     ];
 
     // 智能体ID解析
-    const assistantId = /^\d{4}$/.test(model) ? model : null;
+    const assistantId = /^\d{3,}$/.test(model) ? model : null;
     assistantId && logger.info(`选用智能体ID: ${assistantId}`);
 
     // 创建会话
