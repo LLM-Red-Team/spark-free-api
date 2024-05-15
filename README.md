@@ -79,6 +79,10 @@ https://udify.app/chat/xsLvQf9U0QJRIkmN
 
 ![多轮对话](./doc/example-1.png)
 
+### 智能体对话Demo
+
+![智能体对话](./doc/example-6.png)
+
 ### 联网搜索Demo
 
 ![联网搜索](./doc/example-2.png)
@@ -110,8 +114,6 @@ https://udify.app/chat/xsLvQf9U0QJRIkmN
 ### 智能体接入
 
 从[这里](https://xinghuo.xfyun.cn/iflygpt/bot/home/get)使用浏览器搜索功能找到你想要的智能体，复制它的`botId`作为`model`值。
-
-![example11](./doc/example-6.png)
 
 ### 多账号接入
 
