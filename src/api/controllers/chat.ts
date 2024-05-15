@@ -803,22 +803,20 @@ function createTransStream(
           }
           text = temp;
         }
-        else {
-          const data = `data: ${JSON.stringify({
-            id: convId,
-            model,
-            object: "chat.completion.chunk",
-            choices: [
-              {
-                index: 0,
-                delta: { content: text },
-                finish_reason: null,
-              },
-            ],
-            created,
-          })}\n\n`;
-          !transStream.closed && transStream.write(data);
-        }
+        const data = `data: ${JSON.stringify({
+          id: convId,
+          model,
+          object: "chat.completion.chunk",
+          choices: [
+            {
+              index: 0,
+              delta: { content: text },
+              finish_reason: null,
+            },
+          ],
+          created,
+        })}\n\n`;
+        !transStream.closed && transStream.write(data);
       }
     } catch (err) {
       logger.error(err);
