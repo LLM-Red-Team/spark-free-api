@@ -29,6 +29,7 @@ Moonshot AI（Kimi.ai）接口转API [kimi-free-api](https://github.com/LLM-Red-
 * [在线体验](#在线体验)
 * [效果示例](#效果示例)
 * [接入准备](#接入准备)
+  * [智能体接入](#智能体接入)
   * [多账号接入](#多账号接入)
 * [Docker部署](#Docker部署)
   * [Docker-compose部署](#Docker-compose部署)
@@ -101,6 +102,12 @@ https://udify.app/chat/xsLvQf9U0QJRIkmN
 这个值将作为Authorization的Bearer Token值：`Authorization: Bearer TOKEN`
 
 **注意：如果退出登录或重新登录将可能导致ssoSessionId失效！**
+
+### 智能体接入
+
+从[这里](https://xinghuo.xfyun.cn/iflygpt/bot/home/get)使用浏览器搜索功能找到你想要的智能体，复制它的`botId`作为`model`值。
+
+![example11](./doc/example-6.png)
 
 ### 多账号接入
 
@@ -256,8 +263,12 @@ Authorization: Bearer [ssoSessionId]
 请求数据：
 ```json
 {
-    // 模型名称随意填写，如果不希望输出检索过程模型名称请包含silent_search
+    // 模型名称随意填写，如果使用智能体请填写botId，如1662
+    // 可以从这里全局搜索找到你想用的智能体https://xinghuo.xfyun.cn/iflygpt/bot/home/get
     "model": "spark",
+    // 目前多轮对话基于消息合并实现，某些场景可能导致能力下降且受最大token数限制
+    // 如果您想获得原生的多轮对话体验，可以传入首轮消息获得的id，来接续上下文，注意如果使用这个，首轮必须传none，否则第二轮会出现[belongerr]！
+    // "conversation_id": "331680774:cht000b6cfc@dx18f7a7ef0bab81c560",
     "messages": [
         {
             "role": "user",
@@ -272,7 +283,8 @@ Authorization: Bearer [ssoSessionId]
 响应数据：
 ```json
 {
-    "id": "296727672",
+    // 如果想获得原生多轮对话体验，此id，你可以传入到下一轮对话的conversation_id来接续上下文
+    "id": "331680774:cht000b6cfc@dx18f7a7ef0bab81c560",
     "model": "spark",
     "object": "chat.completion",
     "choices": [
@@ -290,7 +302,7 @@ Authorization: Bearer [ssoSessionId]
         "completion_tokens": 1,
         "total_tokens": 2
     },
-    "created": 1713933188
+    "created": 1715747089
 }
 ```
 
@@ -365,7 +377,7 @@ Authorization: Bearer [ssoSessionId]
 响应数据：
 ```json
 {
-    "id": "296791588",
+    "id": "296791588:cht000b6cfc@dx18f7a7ef0bab11c560",
     "model": "spark",
     "object": "chat.completion",
     "choices": [
@@ -429,7 +441,7 @@ Authorization: Bearer [ssoSessionId]
 响应数据：
 ```json
 {
-    "id": "296795606",
+    "id": "296795606:cht000b6cfc@dx18f7b7ef0bab81c53c",
     "model": "spark",
     "object": "chat.completion",
     "choices": [

@@ -72,10 +72,12 @@ function generateCookie(ssoSessionId: string) {
  *
  * @param ssoSessionId 登录态ID
  */
-async function createConversation(ssoSessionId: string) {
+async function createConversation(ssoSessionId: string, assistantId?: string) {
   const result = await axios.post(
     "https://xinghuo.xfyun.cn/iflygpt/u/chat-list/v1/create-chat-list",
-    {},
+    assistantId ? {
+      botId: assistantId
+    } : {},
     {
       headers: {
         Clienttype: "1",
@@ -132,22 +134,34 @@ async function createCompletion(
   model = MODEL_NAME,
   messages: any[],
   ssoSessionId: string,
+  refConvId: string,
   retryCount = 0
 ) {
   return (async () => {
     logger.info(messages);
 
+    // 智能体ID解析
+    const assistantId = /^\d{4}$/.test(model) ? model : null;
+    assistantId && logger.info(`选用智能体ID: ${assistantId}`);
+
+    let convId;
+
+    // 引用对话ID处理
+    let sid;
+    if (/[0-9]{9,}\:cht/.test(refConvId))
+      ([convId, sid] = refConvId.split(':'))
+
     // 创建会话
-    const convId = await createConversation(ssoSessionId);
+    convId = convId || await createConversation(ssoSessionId, assistantId);
 
     // 提取引用文件URL并上传spark获得引用的文件ID列表
     const refFileUrls = extractRefFileUrls(messages);
     const refs = refFileUrls.length
       ? await Promise.all(
-          refFileUrls.map((fileUrl) =>
-            uploadFile(convId, fileUrl, ssoSessionId)
-          )
+        refFileUrls.map((fileUrl) =>
+          uploadFile(convId, fileUrl, ssoSessionId)
         )
+      )
       : [];
 
     // 请求流
@@ -156,9 +170,11 @@ async function createCompletion(
       "fd",
       util.generateRandomString({ length: 6, charset: "numeric" })
     );
-    formData.append("isBot", "0");
+    formData.append("isBot", assistantId ? "1" : "0");
+    assistantId && formData.append("botId", assistantId);
     formData.append("clientType", "1");
-    formData.append("text", messagesPrepare(messages));
+    formData.append("text", messagesPrepare(messages, !!refConvId));
+    sid && formData.append("sid", sid);
     formData.append("chatId", convId);
     formData.append(
       "GtToken",
@@ -195,7 +211,7 @@ async function createCompletion(
     );
 
     // 异步移除会话，如果消息不合规，此操作可能会抛出数据库错误异常，请忽略
-    removeConversation(convId, ssoSessionId).catch((err) => console.error(err));
+    !refConvId && removeConversation(convId, ssoSessionId).catch((err) => logger.error(err));
 
     return answer;
   })().catch((err) => {
@@ -204,7 +220,7 @@ async function createCompletion(
       logger.warn(`Try again after ${RETRY_DELAY / 1000}s...`);
       return (async () => {
         await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
-        return createCompletion(model, messages, ssoSessionId, retryCount + 1);
+        return createCompletion(model, messages, ssoSessionId, refConvId, retryCount + 1);
       })();
     }
     throw err;
@@ -217,28 +233,41 @@ async function createCompletion(
  * @param model 模型名称
  * @param messages 参考gpt系列消息格式，多轮对话请完整提供上下文
  * @param ssoSessionId 登录态ID
+ * @param refConvId 引用的会话ID
  * @param retryCount 重试次数
  */
 async function createCompletionStream(
   model = MODEL_NAME,
   messages: any[],
   ssoSessionId: string,
+  refConvId?: string,
   retryCount = 0
 ) {
   return (async () => {
     logger.info(messages);
 
+    // 智能体ID解析
+    const assistantId = /^\d{4}$/.test(model) ? model : null;
+    assistantId && logger.info(`选用智能体ID: ${assistantId}`);
+
+    let convId;
+
+    // 引用对话ID处理
+    let sid;
+    if (/[0-9]{9,}\:cht/.test(refConvId))
+      ([convId, sid] = refConvId.split(':'))
+
     // 创建会话
-    const convId = await createConversation(ssoSessionId);
+    convId = convId || await createConversation(ssoSessionId, assistantId);
 
     // 提取引用文件URL并上传spark获得引用的文件ID列表
     const refFileUrls = extractRefFileUrls(messages);
     const refs = refFileUrls.length
       ? await Promise.all(
-          refFileUrls.map((fileUrl) =>
-            uploadFile(convId, fileUrl, ssoSessionId)
-          )
+        refFileUrls.map((fileUrl) =>
+          uploadFile(convId, fileUrl, ssoSessionId)
         )
+      )
       : [];
 
     // 请求流
@@ -247,9 +276,11 @@ async function createCompletionStream(
       "fd",
       util.generateRandomString({ length: 6, charset: "numeric" })
     );
-    formData.append("isBot", "0");
+    formData.append("isBot", assistantId ? "1" : "0");
+    assistantId && formData.append("botId", assistantId);
     formData.append("clientType", "1");
-    formData.append("text", messagesPrepare(messages));
+    formData.append("text", messagesPrepare(messages, !!refConvId));
+    sid && formData.append("sid", sid);
     formData.append("chatId", convId);
     formData.append(
       "GtToken",
@@ -284,8 +315,8 @@ async function createCompletionStream(
         `Stream has completed transfer ${util.timestamp() - streamStartTime}ms`
       );
       // 流传输结束后异步移除会话，如果消息不合规，此操作可能会抛出数据库错误异常，请忽略
-      removeConversation(convId, ssoSessionId).catch((err) =>
-        console.error(err)
+      !refConvId && removeConversation(convId, ssoSessionId).catch((err) =>
+        logger.error(err)
       );
     });
   })().catch((err) => {
@@ -298,6 +329,7 @@ async function createCompletionStream(
           model,
           messages,
           ssoSessionId,
+          refConvId,
           retryCount + 1
         );
       })();
@@ -318,8 +350,12 @@ async function generateImages(
       { role: "user", content: prompt.indexOf('画') == -1 ? `请画：${prompt}` : prompt },
     ];
 
+    // 智能体ID解析
+    const assistantId = /^\d{4}$/.test(model) ? model : null;
+    assistantId && logger.info(`选用智能体ID: ${assistantId}`);
+
     // 创建会话
-    const convId = await createConversation(ssoSessionId);
+    const convId = await createConversation(ssoSessionId, assistantId);
 
     // 请求流
     const formData = new FormData();
@@ -327,7 +363,8 @@ async function generateImages(
       "fd",
       util.generateRandomString({ length: 6, charset: "numeric" })
     );
-    formData.append("isBot", "0");
+    formData.append("isBot", assistantId ? "1" : "0");
+    assistantId && formData.append("botId", assistantId);
     formData.append("clientType", "1");
     formData.append("text", messagesPrepare(messages));
     formData.append("chatId", convId);
@@ -427,17 +464,32 @@ function extractRefFileUrls(messages: any[]) {
  * user:新消息
  *
  * @param messages 参考gpt系列消息格式，多轮对话请完整提供上下文
+ * @param isRefConv 是否为引用会话
  */
-function messagesPrepare(messages: any[]) {
-  // 注入消息提升注意力
-  let latestMessage = messages[messages.length - 1];
-  let hasFileOrImage =
-    Array.isArray(latestMessage.content) &&
-    latestMessage.content.some(
-      (v) => typeof v === "object" && ["file", "image_url"].includes(v["type"])
-    );
-  // 第二轮开始注入system prompt
-  if (messages.length > 2) {
+function messagesPrepare(messages: any[], isRefConv = false) {
+  let content;
+  if (isRefConv || messages.length < 2) {
+    content = messages.reduce((content, message) => {
+      if (_.isArray(message.content)) {
+        return (
+          message.content.reduce((_content, v) => {
+            if (!_.isObject(v) || v["type"] != "text") return _content;
+            return _content + (v["text"] || "") + "\n";
+          }, content)
+        );
+      }
+      return content + `${message.content}\n`;
+    }, "");
+    logger.info("\n透传内容：\n" + content);
+  }
+  else {
+    // 检查最新消息是否含有"type": "image_url"或"type": "file",如果有则注入消息
+    let latestMessage = messages[messages.length - 1];
+    let hasFileOrImage =
+      Array.isArray(latestMessage.content) &&
+      latestMessage.content.some(
+        (v) => typeof v === "object" && ["file", "image_url"].includes(v["type"])
+      );
     if (hasFileOrImage) {
       let newFileMessage = {
         content: "关注用户最新发送文件和消息",
@@ -445,27 +497,22 @@ function messagesPrepare(messages: any[]) {
       };
       messages.splice(messages.length - 1, 0, newFileMessage);
       logger.info("注入提升尾部文件注意力system prompt");
-    } else {
-      let newTextMessage = {
-        content: "关注用户最新的消息",
-        role: "system",
-      };
-      messages.splice(messages.length - 1, 0, newTextMessage);
-      logger.info("注入提升尾部消息注意力system prompt");
     }
+    content = (
+      messages.reduce((content, message) => {
+        if (Array.isArray(message.content)) {
+          return message.content.reduce((_content, v) => {
+            if (!_.isObject(v) || v["type"] != "text") return _content;
+            return _content + `${message.role || "user"}:${v["text"] || ""}\n`;
+          }, content);
+        }
+        return (content += `${message.role || "user"}:${message.content}\n`);
+      }, "") + "assistant:"
+    )
+      // 移除MD图像URL避免幻觉
+      .replace(/\!\[.+\]\(.+\)/g, "")
+    logger.info("\n对话合并：\n" + content);
   }
-
-  const content =
-    messages.reduce((content, message) => {
-      if (Array.isArray(message.content)) {
-        return message.content.reduce((_content, v) => {
-          if (!_.isObject(v) || v["type"] != "text") return _content;
-          return _content + `${message.role || "user"}:${v["text"] || ""}\n`;
-        }, content);
-      }
-      return (content += `${message.role || "user"}:${message.content}\n`);
-    }, "") + "assistant:";
-  logger.info("\n对话合并：\n" + content);
   return content;
 }
 
@@ -649,9 +696,14 @@ async function receiveStream(model: string, convId: string, stream: any) {
     };
     const parser = createParser((event) => {
       try {
-        if (event.type !== "event" || /<sid>$/.test(event.data)) return;
-        if (event.data == "<end>") resolve(data);
-        else {
+        if (event.type !== "event") return;
+        if (/<sid>$/.test(event.data)) {
+          data.id = `${convId}:${event.data.replace(/<sid>$/, "").trim()}`;
+          resolve(data);
+        }
+        else if (/^\[.+\]$/.test(event.data))
+          data.choices[0].message.content += event.data;
+        else if (!/^<.+>$/.test(event.data)) {
           // 解析文本
           const text = Buffer.from(event.data, "base64").toString();
           if (text.indexOf("multi_image_url") != -1) {
@@ -715,16 +767,19 @@ function createTransStream(
     );
   const parser = createParser((event) => {
     try {
-      if (event.type !== "event" || /<sid>$/.test(event.data)) return;
-      if (event.data == "<end>") {
+      if (event.type !== "event") return;
+      const isErrorText = /^\[.+\]$/.test(event.data);
+      if (/<sid>$/.test(event.data) || isErrorText) {
         const data = `data: ${JSON.stringify({
-          id: convId,
+          id: `${convId}:${event.data.replace(/<sid>$/, "").trim()}`,
           model,
           object: "chat.completion.chunk",
           choices: [
             {
               index: 0,
-              delta: {},
+              delta: isErrorText ? {
+                content: event.data
+              } : {},
               finish_reason: "stop",
             },
           ],
@@ -734,7 +789,8 @@ function createTransStream(
         !transStream.closed && transStream.write(data);
         !transStream.closed && transStream.end("data: [DONE]\n\n");
         endCallback && endCallback();
-      } else {
+      }
+      else if (!/^<.+>$/.test(event.data)) {
         // 解析文本
         let text = Buffer.from(event.data, "base64").toString();
         if (text.indexOf("multi_image_url") != -1) {
@@ -747,20 +803,22 @@ function createTransStream(
           }
           text = temp;
         }
-        const data = `data: ${JSON.stringify({
-          id: convId,
-          model,
-          object: "chat.completion.chunk",
-          choices: [
-            {
-              index: 0,
-              delta: { content: text },
-              finish_reason: null,
-            },
-          ],
-          created,
-        })}\n\n`;
-        !transStream.closed && transStream.write(data);
+        else {
+          const data = `data: ${JSON.stringify({
+            id: convId,
+            model,
+            object: "chat.completion.chunk",
+            choices: [
+              {
+                index: 0,
+                delta: { content: text },
+                finish_reason: null,
+              },
+            ],
+            created,
+          })}\n\n`;
+          !transStream.closed && transStream.write(data);
+        }
       }
     } catch (err) {
       logger.error(err);
@@ -790,8 +848,7 @@ async function receiveImages(stream): Promise<string[]> {
     const imageUrls = [];
     const parser = createParser((event) => {
       try {
-        if (event.type !== "event" || /<sid>$/.test(event.data)) return;
-        if (event.data == "<end>") return;
+        if (event.type !== "event" || /^<.+>$/.test(event.data)) return;
         // 解析文本
         const text = Buffer.from(event.data, "base64").toString();
         if (text.indexOf("multi_image_url") != -1) {
@@ -799,7 +856,7 @@ async function receiveImages(stream): Promise<string[]> {
           let match;
           while ((match = urlPattern.exec(text)) !== null) {
             const url = match[1];
-            if(imageUrls.indexOf(url) == -1)
+            if (imageUrls.indexOf(url) == -1)
               imageUrls.push(url);
           }
         }
