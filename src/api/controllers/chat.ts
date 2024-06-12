@@ -706,6 +706,8 @@ async function receiveStream(model: string, convId: string, stream: any) {
         else if (!/^<.+>$/.test(event.data)) {
           // 解析文本
           const text = Buffer.from(event.data, "base64").toString();
+          if (text.indexOf("allTool") != -1)
+            return;
           if (text.indexOf("multi_image_url") != -1) {
             const urlPattern = /"(https?:\/\/\S+)"/g;
             let match;
@@ -793,6 +795,8 @@ function createTransStream(
       else if (!/^<.+>$/.test(event.data)) {
         // 解析文本
         let text = Buffer.from(event.data, "base64").toString();
+        if (text.indexOf("allTool") != -1)
+          return;
         if (text.indexOf("multi_image_url") != -1) {
           let temp = '';
           const urlPattern = /"(https?:\/\/\S+)"/g;
